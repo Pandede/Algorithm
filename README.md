@@ -8,7 +8,11 @@ All the assignments must refer to the library [algs4.jar](https://algs4.cs.princ
 |Week|Assignment|Score|
 |----|----------|-----|
 |0|[HelloWorld](https://github.com/Pandede/Algorithm/tree/master/HelloWorld)|100/100|
+<<<<<<< HEAD
 |1|[Percolation](https://github.com/Pandede/Algorithm/tree/master/Percolation)|100/100|
+=======
+|1|Percolation| -/- |
+>>>>>>> cc75e014282b68140b2859ce839f831473a3e739
 |2|Deques and Randomized Queues| -/- |
 |3|Collinear Points| -/- |
 |4|8 Puzzle| -/- |
