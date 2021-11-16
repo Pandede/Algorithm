@@ -11,5 +11,5 @@ All the assignments must refer to the library [algs4.jar](https://algs4.cs.princ
 |1|[Percolation](https://github.com/Pandede/Algorithm/tree/master/Percolation)|100/100|
 |2|[Deques and Randomized Queues](https://github.com/Pandede/Algorithm/tree/master/Queues)|100/100|
 |3|[Collinear Points](https://github.com/Pandede/Algorithm/tree/master/CollinearPoints)|100/100|
-|4|8 Puzzle| -/- |
+|4|[8 Puzzle](https://github.com/Pandede/Algorithm/tree/master/8Puzzle)|99/100|
 |5|[Kd-Trees](https://github.com/Pandede/Algorithm/tree/master/KdTree)|100/100|
