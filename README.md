@@ -9,7 +9,7 @@ All the assignments must refer to the library [algs4.jar](https://algs4.cs.princ
 |----|----------|-----|
 |0|[HelloWorld](https://github.com/Pandede/Algorithm/tree/master/HelloWorld)|100/100|
 |1|[Percolation](https://github.com/Pandede/Algorithm/tree/master/Percolation)|100/100|
-|2|Deques and Randomized Queues| -/- |
+|2|[Deques and Randomized Queues](https://github.com/Pandede/Algorithm/tree/master/Queues)|100/100|
 |3|Collinear Points| -/- |
 |4|8 Puzzle| -/- |
 |5|[Kd-Trees](https://github.com/Pandede/Algorithm/tree/master/KdTree)|100/100|
