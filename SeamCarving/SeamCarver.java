@@ -1,5 +1,6 @@
-import edu.princeton.cs.algs4.Picture;
 import java.awt.Color;
+
+import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarver {
 
@@ -8,7 +9,10 @@ public class SeamCarver {
 
     // create a seam carver object based the given picture
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        if (picture == null)
+            throw new IllegalArgumentException();
+
+        this.picture = new Picture(picture);
         this.energyGrid = new double[height()][width()];
 
         // Initialize energy grid
@@ -19,7 +23,7 @@ public class SeamCarver {
 
     // current picture
     public Picture picture() {
-        return this.picture;
+        return new Picture(picture);
     }
 
     // width of current picture
@@ -34,12 +38,11 @@ public class SeamCarver {
 
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
+        // Throw exception if call beyond the border
         if (x < 0 || x >= width() || y < 0 || y >= height())
             throw new IllegalArgumentException();
 
-        if (energyGrid[y][x] != 0)
-            return energyGrid[y][x];
-
+        // Return 1000 if it located at border
         if (x == 0 || x == width() - 1 || y == 0 || y == height() - 1)
             return 1000.0;
 
@@ -89,14 +92,14 @@ public class SeamCarver {
             for (int row = 0; row < height; row++) {
                 // Right-top corner
                 if (row - 1 >= 0)
-                    relaxEdge(col, row, col + 1, row - 1, distTo, edgeTo, energyGrid);
+                    relaxEdge(col, row, col + 1, row - 1, distTo, edgeTo, grid);
 
                 // Right
-                relaxEdge(col, row, col + 1, row, distTo, edgeTo, energyGrid);
+                relaxEdge(col, row, col + 1, row, distTo, edgeTo, grid);
 
                 // Right-Bottom corner
                 if (row + 1 < height)
-                    relaxEdge(col, row, col + 1, row + 1, distTo, edgeTo, energyGrid);
+                    relaxEdge(col, row, col + 1, row + 1, distTo, edgeTo, grid);
             }
         }
 
@@ -125,6 +128,8 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findVerticalSeam() {
+        // Find the vertical seam is identical to find a horizontal seam with transposed
+        // energy grid
         double[][] transposeEnergy = new double[width()][height()];
         for (int col = 0; col < width(); col++)
             for (int row = 0; row < height(); row++)
@@ -143,23 +148,41 @@ public class SeamCarver {
         if (seam == null)
             throw new IllegalArgumentException();
 
-        if (width() <= 1)
+        if (height() <= 1)
+            throw new IllegalArgumentException();
+
+        if (seam.length != width())
+            throw new IllegalArgumentException();
+
+        if (!isValidSeam(seam))
             throw new IllegalArgumentException();
 
         Picture updatedPicture = new Picture(width(), height() - 1);
         double[][] updatedEnergy = new double[height() - 1][width()];
         for (int col = 0; col < width(); col++) {
+            // Paste the pixel and energy cell above the seam
             for (int row = 0; row < seam[col]; row++) {
                 updatedPicture.set(col, row, picture.get(col, row));
                 updatedEnergy[row][col] = energyGrid[row][col];
             }
+            // Same operation as above but below the seam
             for (int row = seam[col] + 1; row < height(); row++) {
                 updatedPicture.set(col, row - 1, picture.get(col, row));
                 updatedEnergy[row - 1][col] = energyGrid[row][col];
             }
         }
-        picture = updatedPicture;
-        energyGrid = updatedEnergy;
+
+        this.picture = updatedPicture;
+
+        // Re-compute the energy near the seam
+        for (int col = 0; col < width(); col++) {
+            int upperRow = seam[col] - 1;
+            if (upperRow > 0)
+                updatedEnergy[upperRow][col] = energy(col, upperRow);
+            if (upperRow + 1 < height())
+                updatedEnergy[upperRow + 1][col] = energy(col, upperRow + 1);
+        }
+        this.energyGrid = updatedEnergy;
     }
 
     // remove vertical seam from current picture
@@ -167,24 +190,50 @@ public class SeamCarver {
         if (seam == null)
             throw new IllegalArgumentException();
 
-        if (height() <= 1)
+        if (width() <= 1)
+            throw new IllegalArgumentException();
+
+        if (seam.length != height())
+            throw new IllegalArgumentException();
+
+        if (!isValidSeam(seam))
             throw new IllegalArgumentException();
 
         Picture updatedPicture = new Picture(width() - 1, height());
         double[][] updatedEnergy = new double[height()][width() - 1];
         for (int row = 0; row < height(); row++) {
+            // Paste the pixel and energy cell to the left of seam
             for (int col = 0; col < seam[row]; col++) {
+
                 updatedPicture.set(col, row, picture.get(col, row));
                 updatedEnergy[row][col] = energyGrid[row][col];
-
             }
+            // Same operation as above but to the right of seam
             for (int col = seam[row] + 1; col < width(); col++) {
                 updatedPicture.set(col - 1, row, picture.get(col, row));
                 updatedEnergy[row][col - 1] = energyGrid[row][col];
             }
         }
-        picture = updatedPicture;
-        energyGrid = updatedEnergy;
+        this.picture = updatedPicture;
+
+        // Re-compute the energy near the seam
+        for (int row = 0; row < height(); row++) {
+            int rightCol = seam[row] - 1;
+            if (rightCol > 0)
+                updatedEnergy[row][rightCol] = energy(rightCol, row);
+            if (rightCol + 1 < width())
+                updatedEnergy[row][rightCol + 1] = energy(rightCol + 1, row);
+        }
+        this.energyGrid = updatedEnergy;
+    }
+
+    private boolean isValidSeam(int[] seam) {
+        for (int i = 0; i < seam.length - 1; i++) {
+            int diff = seam[i] - seam[i + 1];
+            if (diff < -1 || diff > 1)
+                return false;
+        }
+        return true;
     }
 
     // unit testing (optional)
@@ -225,13 +274,13 @@ public class SeamCarver {
         try {
             int[] seam;
             // 4.1 With width of 1
-            picture = new Picture("./seam/1x8.png");
+            picture = new Picture("./seam/8x1.png");
             carver = new SeamCarver(picture);
             seam = carver.findHorizontalSeam();
             carver.removeHorizontalSeam(seam);
 
             // 4.2 With height of 1
-            picture = new Picture("./seam/8x1.png");
+            picture = new Picture("./seam/1x8.png");
             carver = new SeamCarver(picture);
             seam = carver.findVerticalSeam();
             carver.removeVerticalSeam(seam);
@@ -241,9 +290,12 @@ public class SeamCarver {
             carver = new SeamCarver(picture);
             seam = carver.findVerticalSeam();
             carver.removeVerticalSeam(seam);
+
+            carver = new SeamCarver(picture);
+            seam = carver.findHorizontalSeam();
+            carver.removeHorizontalSeam(seam);
         } catch (IllegalArgumentException e) {
             System.out.println("[RemoveSeamWithSingleLine] passed");
         }
-
     }
 }
