@@ -14,3 +14,4 @@ All the assignments must refer to the library [algs4.jar](https://algs4.cs.princ
 |4|[8 Puzzle](https://github.com/Pandede/Algorithm/tree/master/8Puzzle)|99/100|
 |5|[Kd-Trees](https://github.com/Pandede/Algorithm/tree/master/KdTree)|100/100|
 |6|[WordNet](https://github.com/Pandede/Algorithm/tree/master/WordNet)|100/100|
+|7|[Seam Carving](https://github.com/Pandede/Algorithm/tree/master/SeamCarving)|100/100|
